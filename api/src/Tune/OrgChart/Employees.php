@@ -28,6 +28,7 @@ class Employees {
      * @return array
      */
     public function get() {
+        /** @var \Tune\Repository\PDO\Employees $resource */
         $resource = $this->repository->getEmployees();
 
         \Tune\StatsD::statsd()->startMemoryProfile('generateTree');

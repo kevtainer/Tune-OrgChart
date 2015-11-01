@@ -31,7 +31,7 @@ abstract class Adapter implements AdapterInterface {
      * @return array
      */
     public function fetchAll() {
-        return $this->resource->fetch(\PDO::FETCH_ASSOC);
+        return $this->resource->fetchAll(\PDO::FETCH_ASSOC);
     }
 
     /**
