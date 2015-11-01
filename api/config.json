@@ -7,6 +7,6 @@
     "database": "orgchart"
   },
   "origins": [
-    "http://tune.local"
+    "http://tune.dev"
   ]
 }

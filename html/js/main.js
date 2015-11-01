@@ -1,6 +1,6 @@
 var fetchData = function fetchData() {
     return $.ajax({
-        url: "http://api.tune.local/employees",
+        url: "http://api.tune.dev/employees",
         dataType: "json" // defined because nginx is ignoring Content-Type
     });
 };

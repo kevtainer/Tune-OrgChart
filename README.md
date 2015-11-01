@@ -18,7 +18,7 @@ Installation
 * `docker-machine create --driver virtualbox tune`
 * `eval "$(docker-machine env tune)"` (you trust me, yes?)
 * `docker-machine ip tune` Use this ip address to setup your vhost file
-* Add `api.tune.local` && `tune.local` into your hosts file with the aforementioned ip address
+* Add `api.tune.dev` && `tune.dev` into your hosts file with the aforementioned ip address
 * `cd ~/Tune` (you cloned the repository, right?)
 * Build the custom images
   * `docker build -t tune/nginx ./docker/images/nginx`
@@ -33,8 +33,8 @@ Installation
 Stuff you can do
 --
 
-* http://tune.local (:+1:)
-* http://tune.local:8080 (graphite/statsd dashboard)
+* http://tune.dev
+* http://tune.dev:8080 (graphite/statsd dashboard)
 
 Todo (maybe)
 --
