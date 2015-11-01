@@ -1,0 +1,12 @@
+{
+  "database": {
+    "driver": "mysql",
+    "user": "default",
+    "host": "db",
+    "pass": "local",
+    "database": "orgchart"
+  },
+  "origins": [
+    "http://tune.local"
+  ]
+}

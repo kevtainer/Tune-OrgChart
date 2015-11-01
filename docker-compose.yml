@@ -1,0 +1,38 @@
+nginx:
+  image: tune/nginx
+  ports:
+    - "80:80"
+  volumes:
+    - ./api:/var/www/api
+    - ./html:/var/www/html
+    - ./docker/conf/nginx:/etc/nginx/conf.d
+  links:
+    - php
+
+php:
+  image: tune/php
+  volumes:
+    - ./api:/var/www/api
+    - ./docker/conf/php/php-fpm.conf:/usr/local/etc/php-fpm.conf
+    - ./docker/conf/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
+  links:
+    - db
+    - graphite
+
+db:
+  image: tune/mysql
+  volumes:
+    - /var/lib/mysql
+  environment:
+    - MYSQL_USER=default
+    - MYSQL_PASSWORD=local
+    - MYSQL_DATABASE=orgchart
+    - MYSQL_ROOT_PASSWORD=local
+
+graphite:
+  image: hopsoft/graphite-statsd
+  ports:
+    - "8080:80"
+    - "2003:2003"
+    - "8125:8125/udp"
+    - "8126:8126"

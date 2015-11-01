@@ -1,0 +1,19 @@
+{
+  "name": "tune/api",
+  "description": "Tune-OrgChart-API",
+  "authors": [
+    {
+      "name": "Kevin Crawley",
+      "email": "kcmastrpc@gmail.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Tune\\": "src/Tune"
+    }
+  },
+  "require": {
+    "slim/slim": "~2.6",
+    "domnikl/statsd": "2.2.0"
+  }
+}

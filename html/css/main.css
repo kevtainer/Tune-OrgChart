@@ -1,0 +1,9 @@
+#name_filter {
+    font-size: 15px;
+    float: right;
+    margin-bottom: 8px;
+}
+
+#name_filter label {
+    margin-top: -4px;
+}
