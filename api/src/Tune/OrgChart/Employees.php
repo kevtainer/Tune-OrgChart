@@ -9,6 +9,7 @@ class Employees {
     /** @var $repository EmployeesInterface */
     protected $repository;
     protected $tree = [];
+    protected $assoc = [];
     protected $output = [];
 
     public function __construct(EmployeesInterface $repository = null) {
@@ -23,51 +24,80 @@ class Employees {
     }
 
     /**
-     * Processes employees
+     * Delivers stored and derived employee data
      *
-     * @return array
+     * @return $this
      */
     public function get() {
         /** @var \Tune\Repository\PDO\Employees $resource */
         $resource = $this->repository->getEmployees();
 
-        \Tune\StatsD::statsd()->startMemoryProfile('generateTree');
-        \Tune\StatsD::statsd()->startTiming('generateTree');
+        /** START makeTree */
+        \Tune\StatsD::statsd()->startMemoryProfile('makeTree');
+        \Tune\StatsD::statsd()->startTiming('makeTree');
 
         while ($row = $resource->fetch()) {
             $this->makeTree($row);
         }
 
-        \Tune\StatsD::statsd()->endTiming('generateTree');
-        \Tune\StatsD::statsd()->endMemoryProfile('generateTree');
+        \Tune\StatsD::statsd()->endTiming('makeTree');
+        \Tune\StatsD::statsd()->endMemoryProfile('makeTree');
+        /** END makeTree */
 
-        \Tune\StatsD::statsd()->startMemoryProfile('flattenTree');
-        \Tune\StatsD::statsd()->startTiming('flattenTree');
+        /** START countTree */
+        \Tune\StatsD::statsd()->startMemoryProfile('countTree');
+        \Tune\StatsD::statsd()->startTiming('countTree');
 
-        $this->flattenTree($this->tree[1]);
+        $this->countTree($this->tree);
 
-        \Tune\StatsD::statsd()->endTiming('flattenTree');
-        \Tune\StatsD::statsd()->endMemoryProfile('flattenTree');
+        \Tune\StatsD::statsd()->endTiming('countTree');
+        \Tune\StatsD::statsd()->endMemoryProfile('countTree');
+        /** END countTree */
 
+        /** START findTreeDepth */
+        \Tune\StatsD::statsd()->startMemoryProfile('treeDepthOutput');
+        \Tune\StatsD::statsd()->startTiming('treeDepthOutput');
+
+        $this->treeDepthOutput(1, $this->tree[1]);
+
+        \Tune\StatsD::statsd()->endTiming('treeDepthOutput');
+        \Tune\StatsD::statsd()->endMemoryProfile('treeDepthOutput');
+        /** END findTreeDepth */
+
+        ksort($this->output);
         return $this->output;
     }
 
     /**
-     * Traverses and flattens tree branches, keeping track of depth along the way.
+     * Iterates over the tree map and assigns data to the output array while deriving the
+     * number of subordinates for each parent
      *
-     * @param $child
+     * @param $key
+     * @param $tree
      * @param int $depth
      */
-    public function flattenTree($child, $depth = 0) {
+    public function treeDepthOutput($key, $tree, $depth = 0) {
         $this->output[] = [
-            $child['id'],
-            $child['name'],
-            $child['parent_name'],
-            $depth++
+            $this->assoc[$key]['id'],
+            $this->assoc[$key]['name'],
+            $this->assoc[$key]['parent_name'],
+            $depth++,
+            $this->assoc[$key]['child_ct']
         ];
 
-        foreach($child['children'] as $children) {
-            $this->flattenTree($children, $depth);
+        foreach($tree as $id => $branch) {
+            $this->treeDepthOutput($id, $branch, $depth);
+        }
+    }
+
+    /**
+     * Derives the number of children each node in tree has
+     *
+     * @param $tree
+     */
+    public function countTree($tree) {
+        foreach ($tree as $id => $assoc) {
+            $this->assoc[$id]['child_ct'] = count($assoc, COUNT_RECURSIVE);
         }
     }
 
@@ -77,25 +107,22 @@ class Employees {
      * @param $row
      */
     public function makeTree($row) {
+        $this->assoc[$row['id']] = $row;
         $row['children'] = array(); // here we go
 
         $row_reference = "row" . $row['id']; // assign this row an id
-        $$row_reference = $row; // assign data so we can reference it later
+        $$row_reference = [];
 
         $parent = "parent" . $row['parent_id']; // assign this row a parent
 
         if(isset($this->tree[$row['parent_id']])) {
             $$parent = $this->tree[$row['parent_id']]; // parent exists, use that
         } else {
-            $$parent = [
-                'id' => $row['parent_id'],
-                'parent_id' => null,
-                'children' => array()
-            ];
+            $$parent = [];
             $this->tree[$row['parent_id']] = &$$parent; // create a new parent record, we'll need it
         }
 
-        ${$parent}['children'][] = &$$row_reference; // add child row to the parent
+        ${$parent}[$row['id']] = &$$row_reference; // add child row to the parent
         $this->tree[$row['parent_id']] = $$parent; // update parent with the latest child
         $this->tree[$row['id']] = &$$row_reference; // update row with associated data
     }

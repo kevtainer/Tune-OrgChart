@@ -13,6 +13,7 @@
     }
   },
   "require": {
+    "phpunit/phpunit": "5.0.8",
     "slim/slim": "~2.6",
     "domnikl/statsd": "2.2.0"
   }

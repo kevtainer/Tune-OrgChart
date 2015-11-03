@@ -12,6 +12,7 @@ var drawTable = function drawTable() {
         data.addColumn('string', 'Employee Name');
         data.addColumn('string', 'Boss Name');
         data.addColumn('number', 'Distance from CEO');
+        data.addColumn('number', 'Subordinates');
         data.addRows(rows);
 
         var dashboard = new google.visualization.Dashboard(document.querySelector('#dashboard'));
