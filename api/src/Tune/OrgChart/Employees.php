@@ -54,7 +54,7 @@ class Employees {
         \Tune\StatsD::statsd()->endMemoryProfile('countTree');
         /** END countTree */
 
-        /** START findTreeDepth */
+        /** START treeDepthOutput */
         \Tune\StatsD::statsd()->startMemoryProfile('treeDepthOutput');
         \Tune\StatsD::statsd()->startTiming('treeDepthOutput');
 
@@ -62,9 +62,8 @@ class Employees {
 
         \Tune\StatsD::statsd()->endTiming('treeDepthOutput');
         \Tune\StatsD::statsd()->endMemoryProfile('treeDepthOutput');
-        /** END findTreeDepth */
+        /** END treeDepthOutput */
 
-        ksort($this->output);
         return $this->output;
     }
 
