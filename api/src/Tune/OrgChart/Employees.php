@@ -26,42 +26,42 @@ class Employees {
     /**
      * Delivers stored and derived employee data
      *
-     * @return $this
+     * @return array
      */
     public function get() {
         /** @var \Tune\Repository\PDO\Employees $resource */
         $resource = $this->repository->getEmployees();
 
         /** START makeTree */
-        \Tune\StatsD::statsd()->startMemoryProfile('makeTree');
-        \Tune\StatsD::statsd()->startTiming('makeTree');
+        \Tune\StatsD::client()->startMemoryProfile('makeTree');
+        \Tune\StatsD::client()->startTiming('makeTree');
 
         while ($row = $resource->fetch()) {
             $this->makeTree($row);
         }
 
-        \Tune\StatsD::statsd()->endTiming('makeTree');
-        \Tune\StatsD::statsd()->endMemoryProfile('makeTree');
+        \Tune\StatsD::client()->endTiming('makeTree');
+        \Tune\StatsD::client()->endMemoryProfile('makeTree');
         /** END makeTree */
 
         /** START countTree */
-        \Tune\StatsD::statsd()->startMemoryProfile('countTree');
-        \Tune\StatsD::statsd()->startTiming('countTree');
+        \Tune\StatsD::client()->startMemoryProfile('countTree');
+        \Tune\StatsD::client()->startTiming('countTree');
 
         $this->countTree($this->tree);
 
-        \Tune\StatsD::statsd()->endTiming('countTree');
-        \Tune\StatsD::statsd()->endMemoryProfile('countTree');
+        \Tune\StatsD::client()->endTiming('countTree');
+        \Tune\StatsD::client()->endMemoryProfile('countTree');
         /** END countTree */
 
         /** START treeDepthOutput */
-        \Tune\StatsD::statsd()->startMemoryProfile('treeDepthOutput');
-        \Tune\StatsD::statsd()->startTiming('treeDepthOutput');
+        \Tune\StatsD::client()->startMemoryProfile('treeDepthOutput');
+        \Tune\StatsD::client()->startTiming('treeDepthOutput');
 
         $this->treeDepthOutput(1, $this->tree[1]);
 
-        \Tune\StatsD::statsd()->endTiming('treeDepthOutput');
-        \Tune\StatsD::statsd()->endMemoryProfile('treeDepthOutput');
+        \Tune\StatsD::client()->endTiming('treeDepthOutput');
+        \Tune\StatsD::client()->endMemoryProfile('treeDepthOutput');
         /** END treeDepthOutput */
 
         return $this->output;

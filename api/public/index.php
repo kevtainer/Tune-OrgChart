@@ -15,7 +15,7 @@ require_once $autoload_file;
 $statsd = new \Tune\StatsD();
 $statsd->connect();
 
-\Tune\StatsD::statsd()->startTiming('execution');
+\Tune\StatsD::client()->startTiming('execution');
 
 $config = new \Tune\Config();
 $config->load($config_file);
@@ -23,5 +23,5 @@ $config->load($config_file);
 $router = new \Tune\Router(new \Slim\Slim());
 $router->routes()->run();
 
-\Tune\StatsD::statsd()->memory('execution');
-\Tune\StatsD::statsd()->endTiming('execution');
+\Tune\StatsD::client()->memory('execution');
+\Tune\StatsD::client()->endTiming('execution');
