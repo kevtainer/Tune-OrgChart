@@ -6,10 +6,6 @@ class Config {
     public static $instance;
     protected $params;
 
-    public function __construct(array $params = null) {
-        $this->params = $params;
-    }
-
     /**
      * Slurps up a json file and attempts to initialize a Config singleton
      *
