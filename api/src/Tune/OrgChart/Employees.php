@@ -14,13 +14,11 @@ class Employees {
 
     public function __construct(EmployeesInterface $repository = null) {
         if (is_null($repository)) {
-            $this->init();
+            $factory = new Factory('\Tune\Repository\Provider::pdo');
+            $repository = $factory->create('\Tune\Repository\PDO\Employees');
         }
-    }
 
-    public function init() {
-        $factory = new Factory('\Tune\Repository\Provider::pdo');
-        $this->repository = $factory->create('\Tune\Repository\PDO\Employees');
+        $this->repository = $repository;
     }
 
     /**
@@ -75,7 +73,7 @@ class Employees {
      * @param $tree
      * @param int $depth
      */
-    public function treeDepthOutput($key, $tree, $depth = 0) {
+    protected function treeDepthOutput($key, $tree, $depth = 0) {
         $this->output[] = [
             $this->assoc[$key]['id'],
             $this->assoc[$key]['name'],
@@ -94,7 +92,7 @@ class Employees {
      *
      * @param $tree
      */
-    public function countTree($tree) {
+    protected function countTree($tree) {
         foreach ($tree as $id => $assoc) {
             $this->assoc[$id]['child_ct'] = count($assoc, COUNT_RECURSIVE);
         }
@@ -105,7 +103,7 @@ class Employees {
      *
      * @param $row
      */
-    public function makeTree($row) {
+    protected function makeTree($row) {
         $this->assoc[$row['id']] = $row;
         $row['children'] = array(); // here we go
 
