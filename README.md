@@ -40,4 +40,4 @@ Todo (maybe)
 --
 
 * ~~Figure out how to count subordinates without another pass over the tree~~
-* Write tests
+* ~~Write tests~~
